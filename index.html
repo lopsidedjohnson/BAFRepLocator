@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <title>Big Ass Fans Rep Locator</title>
 <link rel="icon" href="https://bigassfans.com/wp-content/uploads/sites/11/2022/01/cropped-cropped-baf-favicon-192x192.png" sizes="192x192">
-<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no,width=device-width">
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
 <style>
@@ -102,6 +102,8 @@ body { margin: 0; padding: 0; }
         style: 'mapbox://styles/bigfans/clvu5f1jw08u601pkebrt26d9',
         center: [-100.04, 38.907],
         maxZoom: 10,
+		// maxzoom: 8,
+		// minzoom: 0,
         zoom: 3
     });
 
@@ -131,7 +133,7 @@ body { margin: 0; padding: 0; }
 
     const geocoder = new MapboxGeocoder({
         accessToken: mapboxgl.accessToken,
-	countries: 'us',
+		countries: 'us',
         flyTo: {
         	essential: true,
         	speed: 2,
@@ -162,9 +164,9 @@ geocoder.clear();
             layers: ['distro']
         });
 
-        var searchedCountry = map.queryRenderedFeatures(geocoder_point, {
-            layers: ['country']
-        });
+//        var searchedCountry = map.queryRenderedFeatures(geocoder_point, {
+//            layers: ['country']
+//        });
 
 /*			var popupContent = `<h4>Your Big Ass Rep is:</h4><div style="font-size: 1.3em;">${searched[0].properties.DistHub}</div><div><a href="${searched[0].properties.URL}" target=_blank>Visit Website</a><br><br>
 					  			${searched[0].properties.Customers}<br><br><div style="font-weight: 550">BAF Account Manager: </div><span style="font-size: 1.1em">${searched[0].properties.AcctMgr} </span>${searched[0].properties.AcctMgrPhn}<br><a href="mailto:${searched[0].properties.BAFEmail}">${searched[0].properties.BAFEmail}</a><br><br>
@@ -172,14 +174,22 @@ geocoder.clear();
 */
 
         if (searched.length) {
-	        new mapboxgl.Popup({ className: "geo-popup" })
+			if (searched[0].properties.DistName === 'BAF') {
+				new mapboxgl.Popup({ className: "geo-popup" })
+            	    .setLngLat(e.result.center)
+					  .setHTML(`<h4>Your Big Ass Rep is:</h4><div style="font-size: 1.3em;">Big Ass Fans</div><div><a href="https://bigassfans.com/" target=_blank>Visit Website</a><br><br>
+					  			<div style="font-weight: 550">BAF Account Manager: </div><span style="font-size: 1.1em">${searched[0].properties.AcctMgr} </span>${searched[0].properties.AcctMgrPhn}<br><a href="mailto:${searched[0].properties.BAFEmail}">${searched[0].properties.BAFEmail}</a>`)
+					.addTo(map);
+			} else {
+				new mapboxgl.Popup({ className: "geo-popup" })
                 .setLngLat(e.result.center)
 				  .setHTML(`<h4>Your Big Ass Rep is:</h4><div style="font-size: 1.3em;">${searched[0].properties.DistHub}</div><div><a href="${searched[0].properties.URL}" target=_blank>Visit Website</a><br><br>
 					  		${searched[0].properties.Customers}<br><br><div style="font-weight: 550">BAF Account Manager: </div><span style="font-size: 1.1em">${searched[0].properties.AcctMgr} </span>${searched[0].properties.AcctMgrPhn}<br><a href="mailto:${searched[0].properties.BAFEmail}">${searched[0].properties.BAFEmail}</a><br><br>
 					  		<div style="font-weight: 550">Contact: </div><span style="font-size: 1.1em">${searched[0].properties.Contact} </span>${searched[0].properties.ContactPhn}<br><a href="mailto:${searched[0].properties.DistEmail}">${searched[0].properties.DistEmail}</a>`)
                 .addTo(map);
+			}
 
-        } else if (searchedCountry.length) {
+        } /* else if (searchedCountry.length) {
             		new mapboxgl.Popup({ className: "geo-popup" })
             	    .setLngLat(e.result.center)
 					  .setHTML(`<h4>Your Big Ass Rep is:</h4><div style="font-size: 1.3em;">Big Ass Fans</div><div><a href="https://bigassfans.com/" target=_blank>Visit Website</a><br><br>
@@ -188,7 +198,7 @@ geocoder.clear();
 	//                .setHTML('<p style="text-align:center"><h4>Your Big Ass Rep is:</h4></p><p style="text-align:center"><h3>${searched[0].properties.DistHub}</h3>
 	//                		 <br><a href="http://mthvac.com" target="_blank">mthvac.com</a></p>')
 	                .addTo(map);
-        }
+        } */
     });
 });
 
@@ -299,15 +309,15 @@ map.addSource('bafhubs', {
 
         map.addSource('distros', {
             'type': 'vector',
-            'url': 'mapbox://bigfans.clvu54ij5fpd61nmnuvgkgq9x-70774'
+            'url': 'mapbox://bigfans.clzhmh7we2mh41mo5s6u5mg25-7s56h'
         });
 
-        map.addSource('countries', {
-        	'type': 'vector',
-        	'url': 'mapbox://mapbox.country-boundaries-v1'
-        });
+ //       map.addSource('countries', {
+ //       	'type': 'vector',
+ //       	'url': 'mapbox://mapbox.country-boundaries-v1'
+ //       });
 
-        map.addLayer(
+/*        map.addLayer(
         	{
         		'id': 'country',
         		'type': 'fill',
@@ -321,16 +331,19 @@ map.addSource('bafhubs', {
         	},
         	firstSymbolId
         );
-
+*/
         map.addLayer(
             {
                 'id': 'distro',
                 'type': 'fill',
                 'source': 'distros',
-                'source-layer': 'BAF_Rep_Locator',
+                'source-layer': 'BAF_Rep_Locator_2024-08-05',
                 'paint': {
                     'fill-outline-color': 'rgba(0,0,0,1)',
-                    'fill-color': 'rgba(250,218,94,0.5)'
+//                    'fill-color': 'rgba(250,218,94,0.5)'
+					'fill-color': ['match', ['get', 'DistName'],
+									'BAF', 'rgba(255,196,28,0.5)',
+									'rgba(250,218,94,0.5)']
                 }
             },
             firstSymbolId
@@ -343,10 +356,13 @@ map.addSource('bafhubs', {
                 'id': 'distro-highlighted',
                 'type': 'fill',
                 'source': 'distros',
-                'source-layer': 'BAF_Rep_Locator',
+                'source-layer': 'BAF_Rep_Locator_2024-08-05',
                 'paint': {
                     'fill-outline-color': 'rgba(0,0,0,1)',
-                    'fill-color': 'rgba(250,218,94,0.85)'
+//                    'fill-color': 'rgba(250,218,94,0.85)'
+					'fill-color': ['match', ['get', 'DistName'],
+									'BAF', 'rgba(255,196,38,0.85)',
+									'rgba(250,218,94,0.85)']
                 },
                 // Display none by adding a
                 // filter with an empty string.
@@ -367,7 +383,7 @@ map.addSource('bafhubs', {
             // Use filter to collect only results
             // with the same county name.
             const relatedDistros = map.querySourceFeatures('distros', {
-                sourceLayer: 'BAF_Rep_Locator',
+                sourceLayer: 'BAF_Rep_Locator_2024-08-05',
                 filter: ['in', 'DistHub', feature.properties.DistHub]
             });
 
@@ -428,10 +444,10 @@ map.addSource('bafhubs', {
                 layers: ['distro']
             });
 
-            const clickCountry = map.queryRenderedFeatures(e.point, {
+/*            const clickCountry = map.queryRenderedFeatures(e.point, {
             	layers: ['country']
             });
-
+*/
 			if (clickIcons.length) {
 				new mapboxgl.Popup()
 					.setLngLat(e.lngLat)
@@ -440,17 +456,26 @@ map.addSource('bafhubs', {
 			}
 
             else if (clickFeatures.length) {
+				if (clickFeatures[0].properties.DistName === 'BAF') {
 	            new mapboxgl.Popup({ className: "geo-popup" })
 	                .setLngLat(e.lngLat)
-					  .setHTML(`<h4>Your Big Ass Rep is:</h4><div style="font-size: 1.3em;">${clickFeatures[0].properties.DistHub}</div><div><a href="${clickFeatures[0].properties.URL}" target=_blank>Visit Website</a><br><br>
-					  			${clickFeatures[0].properties.Customers}<br><br><div style="font-weight: 550">BAF Account Manager: </div><span style="font-size: 1.1em">${clickFeatures[0].properties.AcctMgr} </span>${clickFeatures[0].properties.AcctMgrPhn}<br><a href="mailto:${clickFeatures[0].properties.BAFEmail}">${clickFeatures[0].properties.BAFEmail}</a><br><br>
-					  			<div style="font-weight: 550">Contact: </div><span style="font-size:1.1em">${clickFeatures[0].properties.Contact} </span>${clickFeatures[0].properties.ContactPhn}<br><a href="mailto:${clickFeatures[0].properties.DistEmail}">${clickFeatures[0].properties.DistEmail}</a>`)
+							.setHTML(`<h4>Your Big Ass Rep is:</h4><div style="font-size: 1.3em;">Big Ass Fans</div><div><a href="https://bigassfans.com/" target=_blank>Visit Website</a><br><br>
+					  			<div style="font-weight: 550">BAF Account Manager: </div><span style="font-size: 1.1em">${clickFeatures[0].properties.AcctMgr} </span>${clickFeatures[0].properties.AcctMgrPhn}<br><a href="mailto:${clickFeatures[0].properties.BAFEmail}">${clickFeatures[0].properties.BAFEmail}</a>`)
+//					  }
 	//				  .setHTML('<h4>Your Big Ass Rep is:</h4><h3>'+${searched[0].properties.DistHub}+'</h3>')
 	//                .setHTML('<p style="text-align:center"><h4>Your Big Ass Rep is:</h4></p><p style="text-align:center"><h3>${searched[0].properties.DistHub}</h3>
 	//                		 <br><a href="http://mthvac.com" target="_blank">mthvac.com</a></p>')
 	                .addTo(map);
+			} else {
+				new mapboxgl.Popup({ className: "geo-popup" })
+	                .setLngLat(e.lngLat)
+							.setHTML(`<h4>Your Big Ass Rep is:</h4><div style="font-size: 1.3em;">${clickFeatures[0].properties.DistHub}</div><div><a href="${clickFeatures[0].properties.URL}" target=_blank>Visit Website</a><br><br>
+					  			${clickFeatures[0].properties.Customers}<br><br><div style="font-weight: 550">BAF Account Manager: </div><span style="font-size: 1.1em">${clickFeatures[0].properties.AcctMgr} </span>${clickFeatures[0].properties.AcctMgrPhn}<br><a href="mailto:${clickFeatures[0].properties.BAFEmail}">${clickFeatures[0].properties.BAFEmail}</a><br><br>
+					  			<div style="font-weight: 550">Contact: </div><span style="font-size:1.1em">${clickFeatures[0].properties.Contact} </span>${clickFeatures[0].properties.ContactPhn}<br><a href="mailto:${clickFeatures[0].properties.DistEmail}">${clickFeatures[0].properties.DistEmail}</a>`)
+					.addTo(map);
+			}
             }
-			else if (clickCountry.length) {
+/*			else if (clickCountry.length) {
 
             		new mapboxgl.Popup({ className: "geo-popup" })
             	    .setLngLat(e.lngLat)
@@ -461,7 +486,7 @@ map.addSource('bafhubs', {
 	//                		 <br><a href="http://mthvac.com" target="_blank">mthvac.com</a></p>')
 	                .addTo(map);
 
-	        }
+	        }*/
 		});
 
 
